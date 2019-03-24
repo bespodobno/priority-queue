@@ -36,12 +36,54 @@ class Node {
 	}
 
 	swapWithParent() {
-		//updates parent.parent
-		//updates parent.parent.parent
-		//updates child.parent
-		//updates parent.child.parent
-		//updates children of node and parent node
+		if (this.parent) {
+			const parent = this.parent;
+			const parentOfParent = parent.parent;
 
+			const left = this.left;
+			const right = this.right;
+
+			if (parent.left === this) {
+				//current node is a left child
+				this.left = parent;
+				this.right = parent.right;
+				if (parent.right) {
+					parent.right.parent = this;
+				}
+			} else if (parent.right === this) {
+				//current node is a right child
+				this.right = parent;
+				this.left = parent.left;
+				if (parent.left) {
+					parent.left.parent = this;
+				}
+			}
+
+			// set parent for this node
+			this.parent = parentOfParent;
+
+			// adjust parent: now node is its parent, and node children are its new children
+			parent.parent = this;
+			parent.right = right;
+			parent.left = left;
+
+			// left and right have a new parent
+			if (left) {
+				left.parent = parent;
+			}
+			if (right) {
+				right.parent = parent;
+			}
+
+			// adjust grandpa links
+			if (parentOfParent) {
+				if (parentOfParent.left === parent) {
+					parentOfParent.left = this;
+				} else if (parentOfParent.right == parent) {
+					parentOfParent.right = this;
+				}
+			}
+		}
 	}
 }
 
